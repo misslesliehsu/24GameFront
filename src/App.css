@@ -1,0 +1,118 @@
+.App {
+  text-align: center;
+}
+
+
+@keyframes App-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.gameContainer {
+  position: relative;
+  border-style: solid;
+}
+
+.winnerNextCard {
+  border-style: solid;
+  position: absolute;
+  left: 30%;
+  top: 20%;
+  width: 40%;
+}
+
+.gameCard {
+  display: grid;
+  grid-template-columns: auto auto;
+  position: absolute;
+  width: 40%;
+  left: 30%;
+  top: 10%;
+}
+
+.gameCard div {
+  padding-top: 15%;
+  padding-bottom: 15%;
+  border-color: blue;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 4em;
+}
+
+.gameCard div:active {
+  color: red;
+}
+
+.operators {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  width: 60%;
+  position: absolute;
+  left: 20%;
+  top: 75%;
+}
+
+.symbol {
+  border-color: blue;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 3em;
+}
+
+.symbol:active {
+  color: red;
+}
+
+
+.reset {
+  position: absolute;
+  top:92%;
+  left: 45%;
+  width: 10%;
+}
+
+.reset button {
+  font-size: 1em;
+}
+
+.cardCounter {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  font-size: 2em;
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  height: 32em;
+}
+
+.header {
+  display: grid;
+  border-style: solid;
+  grid-template-columns: 5fr 1fr 1fr 1fr;
+}
+
+.header div {
+  border-style: solid;
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  position: absolute;
+  top: 15%;
+  font-size: 2em;
+  border-style: solid;
+  margin: 0 1em 0 1em;
+}
+
+.names {
+  text-align: left;
+}
+
+.scores {
+  padding-right: 1em;
+
+}
