@@ -4,18 +4,22 @@ import './index.css';
 import App from './App';
 import registerServiceWorker from './registerServiceWorker'
 import rootReducer from './rootReducer'
-import { createStore, applyMiddleware, compose } from 'redux'
-// import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux';
+// import { createStore, applyMiddleware, compose } from 'redux'
+import { ActionCableProvider } from 'react-actioncable-provider';
+import { BrowserRouter } from 'react-router-dom'
+// import { Provider } from 'react-redux';
+import { API_WS_ROOT } from './constants';
 
-const store = createStore(rootReducer)
+
+
+// const store = createStore(rootReducer)
 
 ReactDOM.render(
-  <Provider store={store}>
+  <ActionCableProvider url={API_WS_ROOT}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </Provider>,
+  </ActionCableProvider>,
 document.getElementById('root'),
 );
 registerServiceWorker();

@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from 'react'
+import './App.css'
 import { Redirect, Switch, Route, withRouter } from 'react-router-dom'
 import Game from './Game.js'
 import Header from './Header.js'
+import Lobby from './Lobby'
 
 
 class App extends Component {
@@ -13,7 +14,7 @@ class App extends Component {
         <Header></Header>
         <Switch>
           <Route exact path='/home' component={Lobby}/>
-          <Route path='/game' component={Game}/>
+          <Route exact path='/games/:id/' component={Game}/>
           <Redirect to='/home'/>
         </Switch>
       </div>
