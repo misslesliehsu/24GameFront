@@ -6,9 +6,12 @@ import { API_ROOT } from './constants';
 class Lobby extends Component {
 
   state = {
-    games: []
+    games: [],
+    playerName: '',
+    privateGameCode: ''
   }
 
+  //LOAD AVAIL GAMES
   componentDidMount() {
     fetch(`${API_ROOT}/games`, {
     headers: {
@@ -19,10 +22,12 @@ class Lobby extends Component {
     .then(res => this.setState({games: [...res]}))
   }
 
+  //ADD NEW GAMES
   handleReceiveNewGame = (newGame) => {
     this.setState({games: [...this.state.games, newGame]})
   }
 
+  //SUBMIT NEW GAME
   createNewGame = () => {
     fetch(`${API_ROOT}/games`, {
     method: 'POST',
@@ -34,21 +39,28 @@ class Lobby extends Component {
     .then(res => this.props.history.push(`games/${res.id}`))
   }
 
-  handleJoinGame = (e) => {
-    e.preventDefault()
-    let gameId = e.currentTarget.firstChild.value
-    if (this.state.games.includes(g => g.id === gameId)) {
-      this.props.history.push(`games/${gameId}`)
+  //FINDING & JOINING GAMES
+  handleInputGameCode = (e) => {
+    this.setState({privateGameCode: e.target.value})
+  }
+
+  handleFindGame = () => {
+    if (this.state.games.some(g => g.id == this.state.privateGameCode)) {
+      this.props.history.push(`games/${this.state.privateGameCode}`)
     }
     else {
       window.alert("that game doesn't exist")
     }
   }
 
-  handleCreatePlayerName = (e) => {
-    e.preventDefault()
-    let gameId = e.currentTarget.firstChild.value
+  handlePlayerNameInput = (e) => {
+    this.setState({playerName: e.target.value})
   }
+
+  handleSetPlayerName = () => {
+    sessionStorage.setItem("playerName", this.state.playerName)
+  }
+
 
   render() {
     return (
@@ -56,20 +68,22 @@ class Lobby extends Component {
         <div>
           <button onClick={this.createNewGame}>Start New Game</button>
         </div>
-        //
-        // <div>
-        //   Enter your player name here:
-        //   <input></input>
-        //   <button>OK</button>
-        // </div>
-        <div>
-          Enter Game Id here:
-          <form onSubmit={this.handleJoinGame}>
-            <input></input>
-            <input type='submit'></input>
-          </form>
-        </div>
-        {this.state.games.map(g => <li>{g.id}</li>)}
+        {sessionStorage.playerName ?
+          <div>
+            <h3>Welcome, {sessionStorage.playerName}!</h3>
+          </div>
+           :
+          <div>
+            Enter your player name here:
+            <input value={this.state.playerName} onChange={this.handlePlayerNameInput}></input>
+            <button onClick={this.handleSetPlayerName}>OK</button>
+          </div>
+        }
+        <h3>Find Private Game</h3>
+          <input placeholder="Enter Game Code" value={this.state.privateGameCode} onChange={this.handleInputGameCode}></input>
+          <button onClick={this.handleFindGame}>OK</button>
+        <h3>Open Games</h3>
+        {this.state.games.map(g => <li key={g.id}>{g.id}</li>)}
         <ActionCable
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}
