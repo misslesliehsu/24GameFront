@@ -11,10 +11,10 @@ class Scoreboard extends Component {
       <div>
         <div className='scoreboard'>
           <div className='names'>
-            {this.props.players.map( p =><div>{p.name}</div>)}
+            {this.props.players.map( p =><div key={p.id}>{p.playerName}</div>)}
           </div>
-          <div className='scores'>
-            {this.props.players.map( p =><div>{p.score}</div>)}
+          <div className='points'>
+            {this.props.players.map( p =><div key={p.id}>{p.points}</div>)}
           </div>
         </div>
       </div>

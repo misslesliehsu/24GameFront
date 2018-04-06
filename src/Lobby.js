@@ -8,16 +8,13 @@ class Lobby extends Component {
   state = {
     games: [],
     playerName: '',
-    privateGameCode: ''
+    privateGameCode: '',
+    gameToEnter:''
   }
 
   //LOAD AVAIL GAMES
   componentDidMount() {
-    fetch(`${API_ROOT}/games`, {
-    headers: {
-      'Content-Type': 'application/json'
-      }
-    })
+    fetch(`${API_ROOT}/games`)
     .then(res => res.json())
     .then(res => this.setState({games: [...res]}))
   }
@@ -30,13 +27,30 @@ class Lobby extends Component {
   //SUBMIT NEW GAME
   createNewGame = () => {
     fetch(`${API_ROOT}/games`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-      }
-    })
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        }
+      })
     .then(res => res.json())
-    .then(res => this.props.history.push(`games/${res.id}`))
+    .then(res => {
+      this.setState({gameToEnter: res.id})
+      fetch(`${API_ROOT}/games/${res.id}/players`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          playerName: this.state.playerName
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        sessionStorage.setItem("id", res.id)
+        sessionStorage.setItem("playerName", res.playerName)
+        this.props.history.push(`games/${this.state.gameToEnter}`)
+      })
+    })
   }
 
   //FINDING & JOINING GAMES
@@ -53,6 +67,34 @@ class Lobby extends Component {
     }
   }
 
+  handleJoinOpenGame = (e) => {
+    //create new Player
+    let gameId = e.target.id
+    fetch(`${API_ROOT}/games/${gameId}/players`, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        playerName: this.state.playerName
+      })
+    })
+    .then(res => {
+      if (res.status === 200) {
+        res.json()
+        .then(res => {
+        sessionStorage.setItem("id", res.id)
+        sessionStorage.setItem("playerName", res.playerName)
+        this.props.history.push(`/games/${gameId}`)
+        })
+      }
+      else {
+        res.json().then(res => window.alert(res))
+      }
+    })
+  }
+
+  //SETTING PLAYER NAME
   handlePlayerNameInput = (e) => {
     this.setState({playerName: e.target.value})
   }
@@ -66,7 +108,7 @@ class Lobby extends Component {
     return (
       <div>
         <div>
-          <button onClick={this.createNewGame}>Start New Game</button>
+          <button onClick={this.createNewGame}>Create New Game</button>
         </div>
         {sessionStorage.playerName ?
           <div>
@@ -83,7 +125,7 @@ class Lobby extends Component {
           <input placeholder="Enter Game Code" value={this.state.privateGameCode} onChange={this.handleInputGameCode}></input>
           <button onClick={this.handleFindGame}>OK</button>
         <h3>Open Games</h3>
-        {this.state.games.map(g => <li key={g.id}>{g.id}</li>)}
+        {this.state.games.map(g =><div key={g.id}> <li >{g.id}</li><button id={g.id} onClick={this.handleJoinOpenGame}>Join Game</button></div>)}
         <ActionCable
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}

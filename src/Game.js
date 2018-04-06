@@ -1,54 +1,88 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import Card from './Card.js'
 import Scoreboard from './Scoreboard.js'
 import { ActionCable } from 'react-actioncable-provider';
+import { API_ROOT } from './constants';
+
+//counter, card,
 
 class Game extends Component {
   state = {
-    players: [{name:"Leslie", score:0}, {name:"Lisa", score:10},{name:"Tom", score:5}],
-    cardCounter: 0
+    id: null,
+    players: [],
+    counter: 0,
+    card: null
+  }
+
+  componentDidMount() {
+    fetch(`${API_ROOT}/games/${this.props.match.params.id}`)
+    .then(res => res.json())
+    .then(res => this.setState({counter: res.counter, id: res.id, players: res.players, card: res.card}))
   }
 
   //continually listens for new players / points, cardCounter
-
-  //triggered when someone clicks the "start game" or when new tick is received
-  setCardCounter = () => {
-    this.setState({cardCounter: this.state.cardCounter+1})
-  }
-
-  //turn to game mode
-
-  //tick up cards
-
-  //quit playing
-
-  //
-
-  //if counter is at 10; get the
-
   handleReceiveGameUpdate = (gameUpdate) => {
-    console.log(gameUpdate)
+    switch (gameUpdate.type){
+      case 'newPlayer':
+        this.setState({players: [...this.state.players, gameUpdate.payload]})
+        break
+      case 'readinessUpdate':
+        this.setState({players: [...gameUpdate.payload]})
+        break
+      case 'firstTurn':
+        this.setState({...this.state, counter:1, card: gameUpdate.payload})
+        break
+      case 'pointsUpdateAndCardTurn':
+        this.setState({players:[...gameUpdate.payload.players]})
+        this.setState({counter: gameUpdate.payload.counter})
+      case 'newCard':
+        this.setState({card: gameUpdate.payload})
+        break
+    }
   }
+
+
+  handleReady = () => {
+    //update this player to "ready" on backend; & frontend state
+    // let updated = this.state.players.map( p => {
+    //   if (p.playerName === sessionStorage.playerName) {
+    //     return {...p, ready: true}
+    //   }
+    //   else {return p}
+    // })
+    // this.setState({players: updated})
+    fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem("id")}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ready: true
+      })
+    })
+  }
+
 
   showGameMain() {
-    if (this.state.cardCounter === 0) {
+    //Waiting to start game
+    if (this.state.counter === 0) {
         return (
           <div>waiting
-            <button onClick={this.setCardCounter}>Start Game!</button>
           </div>
         )
     }
-    else if (this.state.cardCounter <= 10) {
+    //in play
+    else if (this.state.counter <= 10) {
       return (
         <div className='main'>
-          <Card user={this.state.user} setPoints={this.setPoints} cardCounter={this.state.cardCounter}></Card>
-          <Scoreboard players={this.state.players}></Scoreboard>
+          <div className='cardCounter'> {this.state.counter}/10</div>
+          <Card card={this.state.card}></Card>
         </div>
       )
     }
-    else if (this.state.cardCounter > 10) {
+    //finished playing
+    else if (this.state.counter > 10) {
       let scores = Array.from(this.state.players, x => x.score)
       let winScore = Math.max(...scores)
       let winPlayers = this.state.players.filter( p => p.score === winScore)
@@ -61,11 +95,24 @@ class Game extends Component {
     }
   }
 
-  render() {
-    return (
-      <div className="App">
-          {this.showGameMain()}
+  showButton = () => {
+    let player = this.state.players.find(p => p.id == sessionStorage.getItem("id"))
+    if (player) {
+      if (player.ready === false) {
+        return (<button onClick={this.handleReady}>Ready?</button>)
+      }
+    }
+  }
 
+
+
+  render() {
+    console.log(this.state)
+      return (
+      <div className='gamePage'>
+          {this.showButton()}
+          {this.showGameMain()}
+          <Scoreboard players={this.state.players}></Scoreboard>
           <ActionCable
             channel={{ channel: 'GameChannel', id: this.props.match.params.id }}
             onReceived={this.handleReceiveGameUpdate}
