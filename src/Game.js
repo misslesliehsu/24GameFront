@@ -44,14 +44,6 @@ class Game extends Component {
 
 
   handleReady = () => {
-    //update this player to "ready" on backend; & frontend state
-    // let updated = this.state.players.map( p => {
-    //   if (p.playerName === sessionStorage.playerName) {
-    //     return {...p, ready: true}
-    //   }
-    //   else {return p}
-    // })
-    // this.setState({players: updated})
     fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem("id")}`, {
       method: 'PATCH',
       headers: {
@@ -98,7 +90,7 @@ class Game extends Component {
   showButton = () => {
     let player = this.state.players.find(p => p.id == sessionStorage.getItem("id"))
     if (player) {
-      if (player.ready === false) {
+      if (player.ready === false && this.state.counter === 0) {
         return (<button onClick={this.handleReady}>Ready?</button>)
       }
     }

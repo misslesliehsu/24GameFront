@@ -12,7 +12,6 @@ class Card extends Component {
     winner:null
   }
 
-
   handleClick = (e) => {
     let input = e.target.innerHTML
     let nums = [this.props.card.num1, this.props.card.num2, this.props.card.num3, this.props.card.num4]
@@ -23,6 +22,19 @@ class Card extends Component {
       if (this.state.numsLeft === 0) {
         this.setState({result: eval(this.state.equation)}, this.handleSubmission)
       }
+    })
+  }
+
+  handleNextCard = () => {
+    this.setState({winner: ''})
+    fetch(`${API_ROOT}/games/${this.props.card.game_id}/players/${sessionStorage.getItem("id")}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ready: true
+      })
     })
   }
 
@@ -38,31 +50,18 @@ class Card extends Component {
           winnerId: sessionStorage.getItem("id")
         })
       })
+      this.handleReset()
     }
   }
 
   //continually listen for winner
-  handleReceiveWinner = (card) => {
-    this.setState({winner: card.winner})
-  }
-
-
-  turnCard = () => {
-    //wipe everything out on backend too -- plus tick up cardCounter
-    this.props.setCardCounter()
-    this.setState({
-        nums: [],
-        numsLeft: 4,
-        equation: '',
-        result: null,
-        winner:{}
-    })
-
+  handleReceiveWinner = (winner) => {
+    this.setState({winner: winner})
+    this.handleReset()
   }
 
   handleReset = () => {
     this.setState({
-      ...this.state,
       numsLeft: 4,
       equation: ''
     })
@@ -72,9 +71,9 @@ class Card extends Component {
     if (this.state.winner) {
       return (
         <div className='winnerNextCard'>
-          Congratulations, {this.state.winner.name}
+          Congratulations, {this.state.winner.playerName}
+          <button onClick={this.handleNextCard}>Next Card</button>
           <br></br>
-          <button onClick={this.turnCard}>Next Game</button>
         </div>
       )
     }
@@ -99,7 +98,7 @@ class Card extends Component {
             <button onClick={this.handleReset}>Reset</button>
           </div>
           <ActionCable
-            channel={{ channel: 'card', id: this.props.card.id }}
+            channel={{ channel: 'CardChannel', id: this.props.card.id }}
             onReceived={this.handleReceiveWinner}
           />
         </div>
@@ -108,6 +107,7 @@ class Card extends Component {
   }
 
   render() {
+    console.log(this.state)
     return (
       <div className='gameContainer'>
         {this.showMain()}

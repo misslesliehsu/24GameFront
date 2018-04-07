@@ -26,6 +26,7 @@ class Lobby extends Component {
 
   //SUBMIT NEW GAME
   createNewGame = () => {
+    let name = prompt("Please enter a player name")
     fetch(`${API_ROOT}/games`, {
       method: 'POST',
       headers: {
@@ -41,7 +42,7 @@ class Lobby extends Component {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          playerName: this.state.playerName
+          playerName: name
         })
       })
       .then(res => res.json())
@@ -68,7 +69,8 @@ class Lobby extends Component {
   }
 
   handleJoinOpenGame = (e) => {
-    //create new Player
+    let name = prompt("Please enter a player name")
+    sessionStorage.setItem("playerName", this.state.playerName)
     let gameId = e.target.id
     fetch(`${API_ROOT}/games/${gameId}/players`, {
       method: "POST",
@@ -76,7 +78,7 @@ class Lobby extends Component {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        playerName: this.state.playerName
+        playerName: name
       })
     })
     .then(res => {
@@ -94,33 +96,10 @@ class Lobby extends Component {
     })
   }
 
-  //SETTING PLAYER NAME
-  handlePlayerNameInput = (e) => {
-    this.setState({playerName: e.target.value})
-  }
-
-  handleSetPlayerName = () => {
-    sessionStorage.setItem("playerName", this.state.playerName)
-  }
-
-
   render() {
     return (
       <div>
-        <div>
-          <button onClick={this.createNewGame}>Create New Game</button>
-        </div>
-        {sessionStorage.playerName ?
-          <div>
-            <h3>Welcome, {sessionStorage.playerName}!</h3>
-          </div>
-           :
-          <div>
-            Enter your player name here:
-            <input value={this.state.playerName} onChange={this.handlePlayerNameInput}></input>
-            <button onClick={this.handleSetPlayerName}>OK</button>
-          </div>
-        }
+        <button onClick={this.createNewGame}>Create New Game</button>
         <h3>Find Private Game</h3>
           <input placeholder="Enter Game Code" value={this.state.privateGameCode} onChange={this.handleInputGameCode}></input>
           <button onClick={this.handleFindGame}>OK</button>

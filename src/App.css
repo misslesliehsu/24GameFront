@@ -88,11 +88,11 @@
   height: 32em;
 }
 
-.header {
+/*.header {
   display: grid;
   border-style: solid;
   grid-template-columns: 5fr 1fr 1fr 1fr;
-}
+}*/
 
 .header div {
   border-style: solid;
