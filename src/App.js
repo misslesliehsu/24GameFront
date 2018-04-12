@@ -11,7 +11,9 @@ class App extends Component {
     return (
       <div>
         <img className='backgroundImage' src={require('./techybackground.jpg')}/>
-        <h1 className='header'>WELCOME TO THE GAME</h1>
+        <div className='header'>
+          <h2>Let's Get 24</h2>
+        </div>
         <Switch>
           <Route exact path='/home' component={Lobby}/>
           <Route exact path='/games/:id/' component={Game}/>

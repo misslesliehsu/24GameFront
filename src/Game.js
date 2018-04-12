@@ -62,9 +62,9 @@ class Game extends Component {
     if (this.state.counter === 0) {
         return (
           <div className='waitingForPlayers'>
-            <div>Waiting for other players to join and get ready...</div>
+            <div>Waiting for other players...</div>
             {this.showReadyButton()}
-            <div className='statuses'>
+            <div>
               {this.state.players.map( p => <li>{p.playerName} - {p.ready ? "Ready" : "Waiting"}</li>)}
             </div>
           </div>
@@ -73,22 +73,25 @@ class Game extends Component {
     //in play
     else if (this.state.counter <= 10) {
       return (
-          <Card className='card'card={this.state.card}></Card>
+          <Card className='card'card={this.state.card} players={this.state.players}></Card>
       )
     }
     //finished playing
     else if (this.state.counter > 10) {
-      let scores = Array.from(this.state.players, x => x.score)
+      let scores = Array.from(this.state.players, x => x.points)
       let winScore = Math.max(...scores)
-      let winPlayers = this.state.players.filter( p => p.score === winScore)
+      let winPlayers = this.state.players.filter( p => p.points === winScore)
       return (
         <div className='GameOverWinner'>
-          Game Over - winner(s):
-          {winPlayers.map(wp => <li>{wp.name}</li>)}
+          <h3>NICE JOB EVERYONE!</h3>
+          The game goes to:
+          <br></br><br></br>
+          {winPlayers.map(wp => <li>{wp.playerName}</li>)}
         </div>
       )
     }
   }
+
 
   showReadyButton = () => {
     let player = this.state.players.find(p => p.id == sessionStorage.getItem("id"))
@@ -108,7 +111,6 @@ class Game extends Component {
   }
 
   render() {
-    console.log(this.state.card)
       return (
       <div>
         <div className='counterCardScore'>

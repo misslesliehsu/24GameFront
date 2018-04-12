@@ -13,6 +13,9 @@ class Card extends Component {
     showWrong: 'hidden'
   }
 
+  componentDidMount() {
+    this.setState({winner: this.props.card.winnerId})
+  }
 
   handleClick = (e) => {
     let input = e.target.id
@@ -28,11 +31,12 @@ class Card extends Component {
     if (nums.includes(parseInt(e.target.id))) {
       this.setState({numsLeft: this.state.numsLeft - 1})
     }
+
     //append to equation to be evaluated
     this.setState({equation: this.state.equation + e.target.id}, () => {
       if (this.state.numsLeft === 0) {
         //if player used all numbers but still has a hanging ")" - wait for it; if that's the case and now the input is anything other than ")", then 'wrong'
-        if (this.state.equation.includes("(") && !this.state.equation.includes(")")) {
+        if (!this.countingParens()) {
           if (!nums.includes(parseInt(input)) && input != (")")) {
             this.setState({showWrong: 'visible'})
             setTimeout( () => this.setState({showWrong: 'hidden'}), 1000)
@@ -63,6 +67,21 @@ class Card extends Component {
       }
     })
   }
+
+  countingParens = () => {
+    let count1 = 0
+    let count2 = 0
+    this.state.equation.split("").forEach( char =>  {
+      if (char == "(") {
+        count1++
+      }
+      else if (char == ")") {
+        count2++
+      }
+    })
+    return count1 === count2
+  }
+
 
   handleNextCard = () => {
     this.setState({winner: ''})
@@ -110,9 +129,12 @@ class Card extends Component {
       return (
         <div className='gameCard'>
           <div className='winnerNextCard'>
-            Congratulations, {this.state.winner.playerName}
+            {this.state.winner.playerName && "Congratulations," + this.state.winner.playerName}
             <br></br>
             <button className='nextCard' onClick={this.handleNextCard}>Next Card</button>
+            <div className='statuses'>
+              {this.props.players.map( p => <li>{p.playerName} - {p.ready ? "Ready" : "Waiting"}</li>)}
+            </div>
           </div>
         </div>
       )
@@ -147,7 +169,7 @@ class Card extends Component {
   }
 
   render() {
-    console.log(this.props)
+    console.log(this.state)
     return (
         this.showMain()
     )

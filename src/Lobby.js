@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
 import { ActionCable } from 'react-actioncable-provider';
 import { API_ROOT } from './constants';
+import GetName from './GetName.js'
+
 
 
 class Lobby extends Component {
 
   state = {
-    games: [],
-    playerName: '',
-    privateGameCode: '',
-    gameToEnter:''
-  }
+      games: [],
+      playerName: '',
+      privateGameCode: '',
+      gameToEnter:'',
+      showGetName: 'hidden'
+    }
+
 
   //LOAD AVAIL GAMES
   componentDidMount() {
@@ -91,7 +95,13 @@ class Lobby extends Component {
     }
   }
 
+
+  onClick () {
+    this.dialog.showAlert('Hello Dialog!')
+  }
+
   render() {
+    console.log(this.state)
     return (
       <div>
         <div className='lobbyButtonsContainer'>
@@ -103,6 +113,7 @@ class Lobby extends Component {
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}
         />
+      <GetName history={this.props.history}></GetName>
       </div>
     )
   }
