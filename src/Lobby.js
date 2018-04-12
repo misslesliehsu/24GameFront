@@ -59,52 +59,46 @@ class Lobby extends Component {
     this.setState({privateGameCode: e.target.value})
   }
 
-  handleFindGame = () => {
-    if (this.state.games.some(g => g.id == this.state.privateGameCode)) {
-      this.props.history.push(`games/${this.state.privateGameCode}`)
+  handleJoinGame = () => {
+    let gameId = prompt("Please enter a game code")
+    if (this.state.games.some(g => g.id == gameId)) {
+      let name = prompt("Please enter a player name")
+      fetch(`${API_ROOT}/games/${gameId}/players`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          playerName: name
+        })
+      })
+      .then(res => {
+        if (res.status === 200) {
+          res.json()
+          .then(res => {
+            sessionStorage.setItem("id", res.id)
+            sessionStorage.setItem("playerName", res.playerName)
+            this.props.history.push(`/games/${gameId}`)
+          })
+        }
+        else {
+          res.json().then(res => window.alert(res))
+        }
+      })
     }
     else {
       window.alert("that game doesn't exist")
     }
   }
 
-  handleJoinOpenGame = (e) => {
-    let name = prompt("Please enter a player name")
-    sessionStorage.setItem("playerName", this.state.playerName)
-    let gameId = e.target.id
-    fetch(`${API_ROOT}/games/${gameId}/players`, {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        playerName: name
-      })
-    })
-    .then(res => {
-      if (res.status === 200) {
-        res.json()
-        .then(res => {
-        sessionStorage.setItem("id", res.id)
-        sessionStorage.setItem("playerName", res.playerName)
-        this.props.history.push(`/games/${gameId}`)
-        })
-      }
-      else {
-        res.json().then(res => window.alert(res))
-      }
-    })
-  }
-
   render() {
     return (
       <div>
-        <button onClick={this.createNewGame}>Create New Game</button>
-        <h3>Find Private Game</h3>
-          <input placeholder="Enter Game Code" value={this.state.privateGameCode} onChange={this.handleInputGameCode}></input>
-          <button onClick={this.handleFindGame}>OK</button>
-        <h3>Open Games</h3>
-        {this.state.games.map(g =><div key={g.id}> <li >{g.id}</li><button id={g.id} onClick={this.handleJoinOpenGame}>Join Game</button></div>)}
+        <div className='lobbyButtonsContainer'>
+          <button className='lobbyButton' onClick={this.createNewGame}>Create New Game</button>
+          <br></br>
+          <button className='lobbyButton' onClick={this.handleJoinGame}>Join A Game </button>
+        </div>
         <ActionCable
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}

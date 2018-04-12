@@ -10,7 +10,8 @@ class App extends Component {
   render() {
     return (
       <div>
-        <h1>WELCOME TO THE GAME</h1>
+        <img className='backgroundImage' src={require('./techybackground.jpg')}/>
+        <h1 className='header'>WELCOME TO THE GAME</h1>
         <Switch>
           <Route exact path='/home' component={Lobby}/>
           <Route exact path='/games/:id/' component={Game}/>

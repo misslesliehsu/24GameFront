@@ -36,6 +36,7 @@ class Game extends Component {
       case 'pointsUpdateAndCardTurn':
         this.setState({players:[...gameUpdate.payload.players]})
         this.setState({counter: gameUpdate.payload.counter})
+        break
       case 'newCard':
         this.setState({card: gameUpdate.payload})
         break
@@ -60,17 +61,19 @@ class Game extends Component {
     //Waiting to start game
     if (this.state.counter === 0) {
         return (
-          <div>waiting
+          <div className='waitingForPlayers'>
+            <div>Waiting for other players to join and get ready...</div>
+            {this.showReadyButton()}
+            <div className='statuses'>
+              {this.state.players.map( p => <li>{p.playerName} - {p.ready ? "Ready" : "Waiting"}</li>)}
+            </div>
           </div>
         )
     }
     //in play
     else if (this.state.counter <= 10) {
       return (
-        <div className='main'>
-          <div className='cardCounter'> {this.state.counter}/10</div>
-          <Card card={this.state.card}></Card>
-        </div>
+          <Card className='card'card={this.state.card}></Card>
       )
     }
     //finished playing
@@ -79,7 +82,7 @@ class Game extends Component {
       let winScore = Math.max(...scores)
       let winPlayers = this.state.players.filter( p => p.score === winScore)
       return (
-        <div>
+        <div className='GameOverWinner'>
           Game Over - winner(s):
           {winPlayers.map(wp => <li>{wp.name}</li>)}
         </div>
@@ -87,28 +90,44 @@ class Game extends Component {
     }
   }
 
-  showButton = () => {
+  showReadyButton = () => {
     let player = this.state.players.find(p => p.id == sessionStorage.getItem("id"))
     if (player) {
       if (player.ready === false && this.state.counter === 0) {
-        return (<button onClick={this.handleReady}>Ready?</button>)
+        return (<button className='readyButton' onClick={this.handleReady}>Ready?</button>)
+      }
+      else {
+        return (<div className='readyButton'></div>)
       }
     }
   }
 
-
+  handleLeaveGame = () => {
+    fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem('id')}`, {method: 'DESTROY'})
+    this.props.history.push('/dashboard')
+  }
 
   render() {
-    console.log(this.state)
+    console.log(this.state.card)
       return (
-      <div className='gamePage'>
-          {this.showButton()}
-          {this.showGameMain()}
-          <Scoreboard players={this.state.players}></Scoreboard>
-          <ActionCable
-            channel={{ channel: 'GameChannel', id: this.props.match.params.id }}
-            onReceived={this.handleReceiveGameUpdate}
-          />
+      <div>
+        <div className='counterCardScore'>
+          <div className='cardCounter'>
+            <button className='quit' onClick={this.handleLeaveGame}>Leave Game</button>
+            {(this.state.counter <= 10 && this.state.counter > 0) &&
+           this.state.counter + "/10"}
+          </div>
+          <div className='gameCardContainer'>
+            {this.showGameMain()}
+          </div>
+          <div className='scoreboardArea'>
+            <Scoreboard players={this.state.players}></Scoreboard>
+          </div>
+        </div>
+        <ActionCable
+          channel={{ channel: 'GameChannel', id: this.props.match.params.id }}
+          onReceived={this.handleReceiveGameUpdate}
+        />
       </div>
     )
   }
