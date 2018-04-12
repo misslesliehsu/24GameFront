@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { ActionCable } from 'react-actioncable-provider';
 import { API_ROOT } from './constants';
 import GetName from './GetName.js'
-
+import Test from './Test.js'
 
 
 class Lobby extends Component {
@@ -12,7 +12,7 @@ class Lobby extends Component {
       playerName: '',
       privateGameCode: '',
       gameToEnter:'',
-      showGetName: 'hidden'
+      showGetName: false
     }
 
 
@@ -28,35 +28,6 @@ class Lobby extends Component {
     this.setState({games: [...this.state.games, newGame]})
   }
 
-  //SUBMIT NEW GAME
-  createNewGame = () => {
-    let name = prompt("Please enter a player name")
-    fetch(`${API_ROOT}/games`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-        }
-      })
-    .then(res => res.json())
-    .then(res => {
-      this.setState({gameToEnter: res.id})
-      fetch(`${API_ROOT}/games/${res.id}/players`, {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          playerName: name
-        })
-      })
-      .then(res => res.json())
-      .then(res => {
-        sessionStorage.setItem("id", res.id)
-        sessionStorage.setItem("playerName", res.playerName)
-        this.props.history.push(`games/${this.state.gameToEnter}`)
-      })
-    })
-  }
 
   //FINDING & JOINING GAMES
   handleInputGameCode = (e) => {
@@ -96,16 +67,12 @@ class Lobby extends Component {
   }
 
 
-  onClick () {
-    this.dialog.showAlert('Hello Dialog!')
-  }
-
   render() {
     console.log(this.state)
     return (
       <div>
         <div className='lobbyButtonsContainer'>
-          <button className='lobbyButton' onClick={this.createNewGame}>Create New Game</button>
+          <GetName history={this.props.history}></GetName>
           <br></br>
           <button className='lobbyButton' onClick={this.handleJoinGame}>Join A Game </button>
         </div>
@@ -113,8 +80,9 @@ class Lobby extends Component {
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}
         />
-      <GetName history={this.props.history}></GetName>
-      </div>
+      <Test></Test>
+    </div>
+
     )
   }
 }

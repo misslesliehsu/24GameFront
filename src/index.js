@@ -10,14 +10,14 @@ import { BrowserRouter } from 'react-router-dom'
 // import { Provider } from 'react-redux';
 import { API_WS_ROOT } from './constants';
 
-
+import Test from './Test.js'
 
 // const store = createStore(rootReducer)
 
 ReactDOM.render(
   <ActionCableProvider url={API_WS_ROOT}>
     <BrowserRouter>
-      <App />
+        <App />
     </BrowserRouter>
   </ActionCableProvider>,
 document.getElementById('root'),

@@ -1,5 +1,6 @@
 import React from 'react'
-// import { action } from '@storybook/addon-actions'
+// import all from '@storybook/addon'
+import { action } from '@storybook/addon-actions'
 import {Button} from 'react-bootstrap'
 import Dialog from 'react-bootstrap-dialog'
 import { API_ROOT } from './constants';
@@ -52,7 +53,7 @@ export default class ShowPrompt extends React.Component {
     return (
       <div>
         <p>
-          <Button onClick={this.showTextInput}>Text input</Button>
+          <Button className='lobbyButton' onClick={this.showTextInput}>Create New Game</Button>
         </p>
         <Dialog ref={(el) => { this.dialog = el }} />
       </div>
