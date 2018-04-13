@@ -3,4 +3,4 @@
 
 
 export const API_ROOT = 'https://letsget24backend.herokuapp.com/api/v1'
-export const API_WS_ROOT = 'wss://letsget24backend.herokuapp.com/cable'
+export const API_WS_ROOT = 'wss://letsget24backend.herokuapp.com/api/v1/cable'
