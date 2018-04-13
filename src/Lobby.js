@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { ActionCable } from 'react-actioncable-provider';
 import { API_ROOT } from './constants';
-import GetName from './GetName.js'
-import Test from './Test.js'
+// import GetName from './GetName.js'
+// import Test from './Test.js'
 
 
 class Lobby extends Component {
@@ -28,6 +28,34 @@ class Lobby extends Component {
     this.setState({games: [...this.state.games, newGame]})
   }
 
+  handleCreateGame = () => {
+    let name = prompt("Choose a player name:")
+    fetch(`${API_ROOT}/games`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+        }
+      })
+    .then(res => res.json())
+    .then(res => {
+      this.setState({gameToEnter: res.id})
+      fetch(`${API_ROOT}/games/${res.id}/players`, {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          playerName: name
+        })
+      })
+      .then(res => res.json())
+      .then(res => {
+        sessionStorage.setItem("id", res.id)
+        sessionStorage.setItem("playerName", res.playerName)
+        this.props.history.push(`games/${this.state.gameToEnter}`)
+      })
+    })
+  }
 
   //FINDING & JOINING GAMES
   handleInputGameCode = (e) => {
@@ -72,7 +100,7 @@ class Lobby extends Component {
     return (
       <div>
         <div className='lobbyButtonsContainer'>
-          <GetName history={this.props.history}></GetName>
+          <button className='lobbyButton' onClick={this.handleCreateGame}>Create A New Game </button>
           <br></br>
           <button className='lobbyButton' onClick={this.handleJoinGame}>Join A Game </button>
         </div>
@@ -80,7 +108,6 @@ class Lobby extends Component {
           channel={{ channel: 'LobbyChannel' }}
           onReceived={this.handleReceiveNewGame}
         />
-      <Test></Test>
     </div>
 
     )
