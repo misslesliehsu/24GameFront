@@ -12,8 +12,13 @@ export default class NameTakenAlert extends React.Component {
   }
 
   showTextInput () {
-    this.dialog.showAlert({
-      body: 'Someone in the game already has that name!',
+    this.dialog.show({
+      body: 'Somebody in the game already has that name! Try again.',
+      actions: [
+        Dialog.OKAction(() => {
+          document.getElementById('nameForExisting').click()
+        })
+      ]
     })
   }
 

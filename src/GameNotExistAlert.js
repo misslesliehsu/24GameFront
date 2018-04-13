@@ -11,18 +11,30 @@ export default class GameNotExistAlert extends React.Component {
     this.showTextInput = this.showTextInput.bind(this)
   }
 
+  //
+  // showTextInput () {
+  //   this.dialog.showAlert('No game with that id! Try again.')
+  // }
+
   showTextInput () {
-    this.dialog.showAlert({
-      body: 'No game with that id! Try again.'
+    this.dialog.show({
+      body: 'No game with that id! Try again.',
+      actions: [
+        Dialog.OKAction(() => {
+          document.getElementById('getGameNumber').click()
+        })
+      ]
     })
   }
+
+
 
   render () {
     return (
       <div>
         <p>
           <Button id='gameNotExist' className='lobbyButton' onClick={this.showTextInput}></Button>
-        </p>
+      </p>
           <Dialog ref={(el) => { this.dialog = el }} />
       </div>
     )

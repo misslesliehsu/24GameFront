@@ -19,7 +19,7 @@ export default class GetNameForExistingGame extends React.Component {
         Dialog.CancelAction(),
         Dialog.OKAction((dialog) => {
           const result = dialog.value
-          fetch(`${API_ROOT}/games/${this.state.gameToEnter}/players`, {
+          fetch(`${API_ROOT}/games/${sessionStorage.getItem('gameToEnter')}/players`, {
             method: "POST",
             headers: {
               'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ export default class GetNameForExistingGame extends React.Component {
               .then(res => {
                 sessionStorage.setItem("id", res.id)
                 sessionStorage.setItem("playerName", res.playerName)
-                this.props.history.push(`/games/${this.state.gameToEnter}`)
+                this.props.history.push(`/games/${sessionStorage.getItem("gameToEnter")}`)
               })
             }
             else {

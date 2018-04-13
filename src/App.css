@@ -409,7 +409,6 @@ button {
 
 .modal-content {
   position: absolute;
-  height: 20%;
   top: 30%;
   width: 20%;
   left: 34%;
@@ -422,13 +421,18 @@ button {
 
 .modal-content input {
   margin-bottom: 4%;
+  width: 100%;
+}
+.modal-content button {
+  font-size: 0.8em;
 }
 
 .counterCardScore {
-  position: fixed;
+  position: absolute;
+  top: 30%;
   width: 100%;
   display: grid;
-  grid-template-columns: 1fr 7fr 2.5fr;
+  grid-template-columns: 1fr 7fr 2fr;
   height: 80%;
 }
 
@@ -578,9 +582,8 @@ button {
 .scoreboardArea {
   border-style: none double none double;
   border-color: #f2f765;
-  font-size: 2em;
+  font-size: 1.7em;
   margin-right: 5%;
-
 }
 
 .scoreboardCore {
@@ -590,9 +593,13 @@ button {
   padding-left: 4%;
   padding-top: 2%;
   padding-right: 4%;
-
 }
 
+.scoreboardHeading {
+  text-align: center;
+  font-weight: bolder;
+  margin-bottom: 2%;
+}
 .names {
   text-align: left;
 }

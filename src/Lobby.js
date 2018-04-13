@@ -39,7 +39,7 @@ class Lobby extends Component {
           <GetGameNumber games={this.state.games} history={this.props.history}></GetGameNumber>
       </div>
       <div style={{visibility: 'hidden'}}>
-        <GetNameForExistingGame></GetNameForExistingGame>
+        <GetNameForExistingGame history={this.props.history}></GetNameForExistingGame>
         <NameTakenAlert></NameTakenAlert>
         <GameNotExistAlert></GameNotExistAlert>
       </div>

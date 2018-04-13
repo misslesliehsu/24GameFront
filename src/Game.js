@@ -123,6 +123,7 @@ class Game extends Component {
             {this.showGameMain()}
           </div>
           <div className='scoreboardArea'>
+            <div className='scoreboardHeading'>Scoreboard</div>
             <Scoreboard players={this.state.players}></Scoreboard>
           </div>
         </div>

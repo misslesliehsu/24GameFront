@@ -19,10 +19,8 @@ export default class GetGameNumber extends React.Component {
         Dialog.CancelAction(),
         Dialog.OKAction((dialog) => {
           const result = dialog.value
-          debugger
           if (this.props.games.some(g => g.id == result)) {
-            debugger
-            this.setState({gameToEnter: result}, () => document.getElementById('nameForExisting').click())
+            sessionStorage.setItem("gameToEnter", result); document.getElementById('nameForExisting').click()
           }
           else {
             document.getElementById('gameNotExist').click()
@@ -33,10 +31,11 @@ export default class GetGameNumber extends React.Component {
   }
 
   render () {
+    console.log(this.state)
     return (
       <div>
         <p>
-          <Button id='nameForExisting' className='lobbyButton' onClick={this.showTextInput}>Join A Game</Button>
+          <Button id='getGameNumber' className='lobbyButton' onClick={this.showTextInput}>Join A Game</Button>
         </p>
           <Dialog ref={(el) => { this.dialog = el }} />
       </div>
