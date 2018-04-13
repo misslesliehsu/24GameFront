@@ -169,7 +169,6 @@ class Card extends Component {
   }
 
   render() {
-    console.log(this.state)
     return (
         this.showMain()
     )

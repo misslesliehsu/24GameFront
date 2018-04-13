@@ -111,6 +111,7 @@ class Game extends Component {
   }
 
   render() {
+    console.log(this.state.counter)
       return (
       <div>
         <div className='counterCardScore'>
