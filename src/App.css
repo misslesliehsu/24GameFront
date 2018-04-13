@@ -397,7 +397,7 @@ button {
   font-size: 1.8em;
   padding-top: 2%;
   padding-bottom: 2%;
-  margin-top: 15%;
+  margin-top: 5%;
   margin-left: 20%;
   margin-right: 20%;
   background-color: #f2f765;
@@ -407,6 +407,22 @@ button {
   border-width: 4px;
 }
 
+.modal-content {
+  position: absolute;
+  height: 20%;
+  top: 30%;
+  width: 20%;
+  left: 34%;
+  font-size: 1.5em;
+  text-align: center;
+  background-color: #8bf4f3;
+  border-style: ridge;
+  padding: 2% 6% 4% 6%;
+}
+
+.modal-content input {
+  margin-bottom: 4%;
+}
 
 .counterCardScore {
   position: fixed;

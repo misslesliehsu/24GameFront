@@ -5,7 +5,7 @@ import {Button} from 'react-bootstrap'
 import Dialog from 'react-bootstrap-dialog'
 import { API_ROOT } from './constants';
 
-export default class GetName extends React.Component {
+export default class GetNameForExistingGame extends React.Component {
   constructor () {
     super()
     this.showTextInput = this.showTextInput.bind(this)
@@ -19,30 +19,27 @@ export default class GetName extends React.Component {
         Dialog.CancelAction(),
         Dialog.OKAction((dialog) => {
           const result = dialog.value
-          fetch(`${API_ROOT}/games`, {
-            method: 'POST',
+          fetch(`${API_ROOT}/games/${this.state.gameToEnter}/players`, {
+            method: "POST",
             headers: {
               'Content-Type': 'application/json'
-              }
+            },
+            body: JSON.stringify({
+              playerName: result
             })
-          .then(res => res.json())
+          })
           .then(res => {
-            this.setState({gameToEnter: res.id})
-            fetch(`${API_ROOT}/games/${res.id}/players`, {
-              method: "POST",
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                playerName: result
+            if (res.status === 200) {
+              res.json()
+              .then(res => {
+                sessionStorage.setItem("id", res.id)
+                sessionStorage.setItem("playerName", res.playerName)
+                this.props.history.push(`/games/${this.state.gameToEnter}`)
               })
-            })
-            .then(res => res.json())
-            .then(res => {
-              sessionStorage.setItem("id", res.id)
-              sessionStorage.setItem("playerName", res.playerName)
-              this.props.history.push(`games/${this.state.gameToEnter}`)
-            })
+            }
+            else {
+              res.json().then(document.getElementById('nameTaken').click())
+            }
           })
         })
       ]
@@ -53,7 +50,7 @@ export default class GetName extends React.Component {
     return (
       <div>
         <p>
-          <Button className='lobbyButton' onClick={this.showTextInput}>Create New Game</Button>
+          <Button id='nameForExisting' className='lobbyButton' onClick={this.showTextInput}></Button>
         </p>
           <Dialog ref={(el) => { this.dialog = el }} />
       </div>
