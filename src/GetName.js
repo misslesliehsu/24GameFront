@@ -27,7 +27,7 @@ export default class GetName extends React.Component {
             })
           .then(res => res.json())
           .then(res => {
-            this.setState({gameToEnter: res.id})
+            sessionStorage.setItem("gameToEnter", res.id)
             fetch(`${API_ROOT}/games/${res.id}/players`, {
               method: "POST",
               headers: {
@@ -41,7 +41,7 @@ export default class GetName extends React.Component {
             .then(res => {
               sessionStorage.setItem("id", res.id)
               sessionStorage.setItem("playerName", res.playerName)
-              this.props.history.push(`games/${this.state.gameToEnter}`)
+              this.props.history.push(`games/${sessionStorage.getItem("gameToEnter")}`)
             })
           })
         })
