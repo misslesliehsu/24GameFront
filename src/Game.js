@@ -3,7 +3,7 @@ import './App.css';
 import Card from './Card.js'
 import Scoreboard from './Scoreboard.js'
 import { ActionCable } from 'react-actioncable-provider';
-import { API_ROOT } from './constants';
+import { API_ROOT, HEADERS } from './constants';
 
 //counter, card,
 
@@ -47,9 +47,7 @@ class Game extends Component {
   handleReady = () => {
     fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem("id")}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: HEADERS,
       body: JSON.stringify({
         ready: true
       })
@@ -106,7 +104,7 @@ class Game extends Component {
   }
 
   handleLeaveGame = () => {
-    fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem('id')}`, {method: 'DESTROY'})
+    fetch(`${API_ROOT}/games/${this.props.match.params.id}/players/${sessionStorage.getItem('id')}`, {method: 'DESTROY', headers: HEADERS})
     this.props.history.push('/dashboard')
   }
 

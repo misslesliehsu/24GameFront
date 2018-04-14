@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { API_ROOT } from './constants'
+import { API_ROOT, HEADERS } from './constants'
 import { ActionCable } from 'react-actioncable-provider';
 
 
@@ -87,9 +87,7 @@ class Card extends Component {
     this.setState({winner: ''})
     fetch(`${API_ROOT}/games/${this.props.card.game_id}/players/${sessionStorage.getItem("id")}`, {
       method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: HEADERS,
       body: JSON.stringify({
         ready: true
       })
@@ -100,9 +98,7 @@ class Card extends Component {
   handleSubmission = () => {
     fetch(`${API_ROOT}/games/${this.props.card.game_id}`, {
       method: "PATCH",
-      headers: {
-        'Content-Type': 'application/json'
-      },
+      headers: HEADERS,
       body: JSON.stringify({
         winnerId: sessionStorage.getItem("id")
       })

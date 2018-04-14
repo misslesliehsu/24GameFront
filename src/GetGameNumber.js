@@ -3,7 +3,6 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 import {Button} from 'react-bootstrap'
 import Dialog from 'react-bootstrap-dialog'
-import { API_ROOT } from './constants';
 
 export default class GetGameNumber extends React.Component {
   constructor () {

@@ -3,7 +3,7 @@ import React from 'react'
 import { action } from '@storybook/addon-actions'
 import {Button} from 'react-bootstrap'
 import Dialog from 'react-bootstrap-dialog'
-import { API_ROOT } from './constants';
+import { API_ROOT, HEADERS } from './constants';
 
 export default class GetName extends React.Component {
   constructor () {
@@ -21,18 +21,14 @@ export default class GetName extends React.Component {
           const result = dialog.value
           fetch(`${API_ROOT}/games`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-              }
+            headers: HEADERS
             })
           .then(res => res.json())
           .then(res => {
             sessionStorage.setItem("gameToEnter", res.id)
             fetch(`${API_ROOT}/games/${res.id}/players`, {
               method: "POST",
-              headers: {
-                'Content-Type': 'application/json'
-              },
+              headers: HEADERS,
               body: JSON.stringify({
                 playerName: result
               })
