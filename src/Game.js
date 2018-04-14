@@ -18,7 +18,7 @@ class Game extends Component {
   componentDidMount() {
     fetch(`${API_ROOT}/games/${this.props.match.params.id}`)
     .then(res => res.json())
-    .then(res => this.setState({counter: res.counter, id: res.id, players: res.players, card: res.card}))
+    .then(res => this.setState({counter:res.counter, id: res.id, players: res.players, card: res.card}))
   }
 
   //continually listens for new players / points, cardCounter
@@ -35,7 +35,7 @@ class Game extends Component {
         break
       case 'pointsUpdateAndCardTurn':
         this.setState({players:[...gameUpdate.payload.players]})
-        this.setState({counter: gameUpdate.payload.counter})
+        this.setState({counter: gameUpdate.payload.counter + 1})
         break
       case 'newCard':
         this.setState({card: gameUpdate.payload})
