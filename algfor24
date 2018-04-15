@@ -1,0 +1,76 @@
+
+let nums = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+let syms = ["+", "-", "/", "*"]
+let spsyms = ["(", ")", " "]
+// let allsyms = ["+", "-", "/", "*", "(", ")"]
+
+// tester1 = [nums, syms, nums, syms, nums, syms, nums, syms] (where syms were all symbols inluding ())
+// tester2 = [spsyms, nums, spsyms, syms, spsyms, nums, spsyms, syms, spsyms, nums, spsyms, syms, spsyms, nums, spsyms, syms, spsyms]
+
+let tester3pt1 = [["("], nums, syms, nums, [")"], syms, nums, syms, nums]
+let tester3pt2 = [["("], nums, syms, nums, [")"], syms, ["("], nums, syms, nums, [")"]]
+let tester3pt3 = [["("], nums, syms, nums, syms, nums, [")"], syms, nums]
+let tester3pt4 = [nums, syms, nums, syms, nums, syms, nums]
+
+//THE METHOD -- ALL PERMUTATIONS
+function permutations(arrays, i) {
+  if (i == arrays.length) {
+    return [[]]
+  }
+
+  let res_next = permutations(arrays, (i + 1))
+  let res = []
+  arrays[i].forEach( x => {
+    res_next.forEach( y => {
+      res.push([x].concat(y))
+    })
+  })
+  return res
+}
+
+
+
+//THE RESULTS -- ALL PERMUTATIONS
+
+function find_candidates(array_of_arrays_of_arrays) {
+  let allsyms = ["+", "-", "/", "*", "(", ")"]
+  array_of_arrays_of_arrays.forEach(aOfa => {
+    let all_results = permutations(aOfa, 0)
+    let cards = []
+
+    all_results.forEach( r => {
+      try {
+        if (eval(r.join("")) == 24) {
+          cards.push(r)}
+      }
+      catch(e) {
+
+      }
+    })
+
+    let results = []
+
+    cards.forEach( array => {
+      let numsOnly = array.filter(char => !allsyms.includes(char))
+
+      let candidate = numsOnly.map(num => parseInt(num))
+      results.push(candidate)
+    })
+
+    var fs = require('fs')
+    var file = fs.createWriteStream('test.txt')
+    file.on('error', function(err) {
+        if(err) {
+            return console.log(err);
+        }
+    })
+    results.forEach( r => {
+      console.log(r)
+      file.write("[" + r + "]" + ",")
+
+    })
+    file.end()
+  })
+}
+
+find_candidates([tester3pt1, tester3pt2, tester3pt3, tester3pt4])
